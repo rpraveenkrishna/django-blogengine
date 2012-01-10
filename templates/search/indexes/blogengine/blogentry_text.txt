@@ -1,0 +1,5 @@
+{{ object.title }}
+{{ object.text }}
+{{ object.created_by }}
+{{ object.category }}
+

@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+
+    {% load mytemplatetags %}	
+    {% get_site_name as site_name %}
+	<title>Home | {{ site_name }} </title>
+
+	<style type="text/css" media="screen">
+		@import url( "{{ MEDIA_URL }}blogengine/style.css" );
+	</style>
+
+	<link rel="stylesheet" href="{{ MEDIA_URL }}blogengine/print.css" type="text/css" media="print">
+
+</head>
+
+<body>
+<div id="wrap">
+	<div id="header">
+		<p id="login">
+            <a href="/subscribe"><font><font>Subscribe</font></font></a>
+        </p>
+		<h1>
+            <a accesskey="1" href="/#header"><font><font>{{ site_name }}</font></font></a>
+        </h1>
+		<p>
+            <font><font>Yet Another Blog!</font></font>
+        </p>
+	</div>
+
+	<div id="content">
+
+    {% if subscribed_already %}
+        <p>
+            You are already subcribed. Thanks!.
+        </p>    
+    {% else %}
+        {% if thanks %}
+            <p>
+                Thanks for subscribing.
+            </p>
+        {% else %}
+            <form method='post' action='.' id='id_submitform'> {% csrf_token %}
+                <ul style='list-style:none;'>
+                    
+                    <li style='list-style:none;'>
+                        <label>Email:</label>
+                        {{ form.email }}{{ form.email.errors }}
+                    </li>
+                </ul>
+                <ul style='list-style:none;'>
+                <li>
+                <input type="submit" class="submit" accesskey="s" value="Subscribe" />
+                </li>
+                </ul>
+            </form>
+        
+        {% endif %}
+    {% endif %}
+    
+        
+       
+
+	</div>
+	
+	
+	<div id="sidebar">
+	<ul>
+		<li id="search">
+			<form id="searchform" method="get" action="/search">
+			<p>
+				<input type="text" value="" name="q" id="id_q">
+				<font><font><input type="submit" class="submit" accesskey="s" value="Search"></font></font>
+			</p>
+			</form>
+		</li>
+        {% load flatpages %}       
+        {% get_flatpages as flatpages %}
+        {% if flatpages %}
+		<li class="pagenav">
+            <h2>
+                <font><font>Pages</font></font>
+            </h2>
+            <ul>
+                {% for page in flatpages %}
+                    <li class="page_item page-item-2"><a href="{{ page.url }}"  title="{{ page.title }}">{{ page.title }}</a></li>
+                {% endfor %}
+            </ul>
+        </li>
+		{% endif %}
+        
+        {% get_latest blogengine.BlogCategory 1000 as blog_categories %}
+        {% if blog_categories %}
+        <li class="categories">
+            <h2>
+                <font><font>Categories</font></font>
+            </h2>
+            <ul>
+                
+                
+                {% for blog_category in blog_categories %}
+                    {% if blog_category.blogentry_set.count > 0 %}
+                    <li class="cat-item cat-item-1">
+                        <a href="{{ blog_category.get_absolute_url }}" title="View all posts filed under Uncategorized">
+                            <font>
+                                <font>{{ blog_category.name }}</font>
+                            </font>
+                        </a>
+                        <font>
+                            <font> ({{ blog_category.blogentry_set.count }})
+                            </font>
+                        </font>
+                    </li>
+                    {% endif %}
+                {% endfor %}
+            </ul>
+        </li>
+        {% endif %}
+        
+        {% get_latest blogengine.BlogEntry 5 as latest_entries %}
+        {% if latest_entries %}
+		<li>
+            <h2><font><font>Latest posts</font></font></h2>
+			<ul>
+                
+                {% for latest_entry in latest_entries %}
+				<li>
+                    <a href="{{ latest_entry.get_absolute_url }}" title="{{ latest_entry.title }}">
+                        <font><font>{{ latest_entry.title|truncatewords:5 }}</font></font>
+                    </a>
+                </li>
+                {% endfor %}
+			</ul>
+		</li>
+        {% endif %}
+        </ul>
+	</div>
+	
+	<div id="footer">
+		<p>
+            <font>
+                <font>© 2011 | </font>
+            </font>
+                    <a accesskey="1" href="/">
+                        <font><font>
+                        {{ site_name }}
+                        </font></font>
+                    </a>
+                    <font><font> | </font></font>
+                    <small><font><font>
+                    
+                    
+                    <a accesskey="2" href="http://www.djangoproject.com/"><img src="http://media.djangoproject.com/img/badges/djangosite80x15_grey.gif" style="width:80px;height:15px;" border="0" alt="A Django site." title="A Django site." /></a>
+                    
+                    </font></font></small>
+                    <font><font> | </font></font>
+                    <a accesskey="3" href="/admin"><font><font>Login</font></font></a>
+        </p>
+	</div>
+	</div>
+</body>
+</html>
